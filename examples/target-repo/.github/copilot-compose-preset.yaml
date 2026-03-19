@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/thomasiverson/copilot-instructions/main/schemas/copilot-compose.schema.json
+
+# Preset-based selection — use a curated module bundle with local overrides.
+source:
+  repo: thomasiverson/copilot-instructions
+
+preset: fullstack-typescript
+
+overrides:
+  typescript-strict:
+    append: |
+      ## Additional Strictness
+      - Enable `exactOptionalPropertyTypes` for this project.
+  eslint-prettier:
+    prepend: |
+      > This project also uses Tailwind CSS — follow the recommended Tailwind class ordering plugin.
+
+sync:
+  strategy: merge
+  header: true

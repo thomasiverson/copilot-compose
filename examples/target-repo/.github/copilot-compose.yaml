@@ -1,0 +1,30 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/thomasiverson/copilot-instructions/main/schemas/copilot-compose.schema.json
+
+# Individual module selection — pick exactly the modules you need.
+source:
+  repo: thomasiverson/copilot-instructions
+
+modules:
+  - typescript-strict
+  - react-patterns
+  - testing-principles
+  - security-baseline
+
+path-instructions:
+  - id: eslint-prettier
+    applyTo: "src/**/*.{ts,tsx}"
+
+overrides:
+  typescript-strict:
+    append: |
+      ## Project-Specific TypeScript Rules
+      - Enable `noUncheckedIndexedAccess` in this repo.
+      - Prefer `satisfies` operator over type assertions for config objects.
+  react-patterns:
+    prepend: |
+      > This project uses Next.js App Router — server components are the default.
+
+sync:
+  strategy: merge
+  header: true
+  separator: "---"

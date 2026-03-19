@@ -1,0 +1,13 @@
+name: fullstack-typescript
+description: >
+  Curated module set for full-stack TypeScript applications using React on the
+  frontend and Node.js on the backend. Includes strict typing, React patterns,
+  testing, security, error handling, and ESLint/Prettier tooling.
+
+modules:
+  - typescript-strict
+  - react-patterns
+  - testing-principles
+  - security-baseline
+  - error-handling
+  - eslint-prettier

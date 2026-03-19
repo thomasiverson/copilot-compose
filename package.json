@@ -1,0 +1,95 @@
+{
+  "name": "copilot-compose",
+  "displayName": "Copilot Compose",
+  "description": "Compose and sync copilot-instructions from a shared master repo",
+  "version": "0.1.0",
+  "publisher": "thomasiverson",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "copilot",
+    "instructions",
+    "compose",
+    "sync"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "workspaceContains:.github/copilot-compose.yaml"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "copilot-compose.sync",
+        "title": "Copilot Compose: Sync Instructions"
+      },
+      {
+        "command": "copilot-compose.preview",
+        "title": "Copilot Compose: Preview Changes"
+      },
+      {
+        "command": "copilot-compose.init",
+        "title": "Copilot Compose: Initialize Config"
+      },
+      {
+        "command": "copilot-compose.check",
+        "title": "Copilot Compose: Check Sync Status"
+      },
+      {
+        "command": "copilot-compose.browse",
+        "title": "Copilot Compose: Browse Modules"
+      }
+    ],
+    "configuration": {
+      "title": "Copilot Compose",
+      "properties": {
+        "copilotCompose.autoSyncOnOpen": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically check for instruction drift when a workspace with copilot-compose.yaml is opened"
+        },
+        "copilotCompose.showPreviewBeforeSync": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show a diff preview before writing synced instructions"
+        },
+        "copilotCompose.defaultMasterRepo": {
+          "type": "string",
+          "default": "",
+          "description": "Default master repo (e.g. thomasiverson/copilot-instructions)"
+        },
+        "copilotCompose.cacheTimeout": {
+          "type": "number",
+          "default": 3600,
+          "description": "Cache timeout in seconds for fetched modules"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc --noEmit",
+    "build": "node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "package": "vsce package",
+    "lint": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "@vitest/coverage-v8": "^4.1.0",
+    "esbuild": "^0.20.0",
+    "typescript": "^5.3.0",
+    "vitest": "^4.1.0"
+  },
+  "dependencies": {
+    "gray-matter": "^4.0.3",
+    "yaml": "^2.3.4"
+  }
+}

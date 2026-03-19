@@ -1,0 +1,11 @@
+name: dotnet-api
+description: >
+  Curated module set for .NET 8+ minimal API projects. Includes C# conventions,
+  minimal API patterns, testing principles, security baseline, and error handling.
+
+modules:
+  - csharp-conventions
+  - dotnet-minimal-api
+  - testing-principles
+  - security-baseline
+  - error-handling

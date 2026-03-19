@@ -1,0 +1,162 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/thomasiverson/copilot-instructions/main/schemas/copilot-compose.schema.json",
+  "title": "Copilot Compose Configuration",
+  "description": "Schema for .github/copilot-compose.yaml — defines which copilot instruction modules to compose into a target repo's .github/copilot-instructions.md file.",
+  "type": "object",
+  "required": ["source"],
+  "additionalProperties": false,
+  "properties": {
+    "source": {
+      "type": "object",
+      "description": "The master repository containing instruction modules and presets.",
+      "required": ["repo"],
+      "additionalProperties": false,
+      "properties": {
+        "repo": {
+          "type": "string",
+          "description": "GitHub repository in owner/repo format that hosts the instruction modules.",
+          "pattern": "^[a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+$",
+          "examples": ["thomasiverson/copilot-instructions"]
+        },
+        "ref": {
+          "type": "string",
+          "description": "Git ref (branch, tag, or commit SHA) to fetch modules from. Defaults to 'main'.",
+          "default": "main",
+          "examples": ["main", "v1.2.0", "abc1234"]
+        }
+      }
+    },
+    "modules": {
+      "type": "array",
+      "description": "List of module IDs to include. Each ID corresponds to a module file in the master repo's modules/ directory. Either 'modules' or 'preset' must be specified.",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "description": "A module ID matching the 'id' field in a module's YAML frontmatter.",
+        "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+        "examples": ["typescript-strict", "react-patterns", "testing-principles"]
+      }
+    },
+    "preset": {
+      "type": "string",
+      "description": "Name of a preset from the master repo's presets/ directory. A preset defines a curated set of modules. Either 'modules' or 'preset' must be specified.",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "examples": ["fullstack-typescript", "dotnet-api"]
+    },
+    "path-instructions": {
+      "type": "array",
+      "description": "Map modules to specific file paths using glob patterns. These become path-scoped instructions that Copilot applies only when working with matching files.",
+      "items": {
+        "type": "object",
+        "required": ["id", "applyTo"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The module ID to scope to specific paths.",
+            "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+            "examples": ["typescript-strict", "eslint-prettier"]
+          },
+          "applyTo": {
+            "type": "string",
+            "description": "Glob pattern defining which files this module's instructions apply to.",
+            "examples": ["src/**/*.ts", "**/*.test.ts", "src/components/**/*.tsx"]
+          }
+        }
+      }
+    },
+    "overrides": {
+      "type": "object",
+      "description": "Per-module overrides to customize module content for this repo. Keys are module IDs.",
+      "patternProperties": {
+        "^[a-z0-9]+(-[a-z0-9]+)*$": {
+          "type": "object",
+          "description": "Override configuration for a specific module.",
+          "additionalProperties": false,
+          "properties": {
+            "append": {
+              "type": "string",
+              "description": "Content to append after the module's instructions.",
+              "examples": ["- Also use Zod for all runtime validation schemas."]
+            },
+            "prepend": {
+              "type": "string",
+              "description": "Content to prepend before the module's instructions.",
+              "examples": ["**Note:** This project uses strict null checks."]
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "sync": {
+      "type": "object",
+      "description": "Controls how modules are composed into the output file.",
+      "additionalProperties": false,
+      "properties": {
+        "strategy": {
+          "type": "string",
+          "description": "Composition strategy. 'merge' combines modules into a single file with separators. 'replace' overwrites the output file entirely on each sync.",
+          "enum": ["merge", "replace"],
+          "default": "merge"
+        },
+        "header": {
+          "type": "boolean",
+          "description": "Whether to include a 'DO NOT EDIT' HTML comment header at the top of the composed file.",
+          "default": true
+        },
+        "separator": {
+          "type": "string",
+          "description": "Markdown separator inserted between module sections in the composed output.",
+          "default": "---",
+          "examples": ["---", "<!-- module-break -->", ""]
+        }
+      }
+    }
+  },
+  "oneOf": [
+    {
+      "required": ["modules"],
+      "properties": {
+        "preset": false
+      }
+    },
+    {
+      "required": ["preset"],
+      "properties": {
+        "modules": false
+      }
+    }
+  ],
+  "examples": [
+    {
+      "source": {
+        "repo": "thomasiverson/copilot-instructions",
+        "ref": "main"
+      },
+      "modules": [
+        "typescript-strict",
+        "react-patterns",
+        "testing-principles"
+      ],
+      "path-instructions": [
+        {
+          "id": "eslint-prettier",
+          "applyTo": "src/**/*.ts"
+        }
+      ],
+      "overrides": {
+        "typescript-strict": {
+          "append": "- Also enforce `noUncheckedIndexedAccess`."
+        }
+      },
+      "sync": {
+        "strategy": "merge",
+        "header": true,
+        "separator": "---"
+      }
+    }
+  ]
+}

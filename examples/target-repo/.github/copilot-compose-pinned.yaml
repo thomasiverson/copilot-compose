@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/thomasiverson/copilot-instructions/main/schemas/copilot-compose.schema.json
+
+# Version-pinned configuration — locked to a specific release tag for stability.
+source:
+  repo: thomasiverson/copilot-instructions
+  ref: v1.2.0
+
+modules:
+  - typescript-strict
+  - react-patterns
+  - testing-principles
+  - error-handling
+
+sync:
+  strategy: replace
+  header: true
+  separator: "---"
